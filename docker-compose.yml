@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   # porta para comunicação entre serviços
+      - "15672:15672" # painel web para monitorar RabbitMQ
+
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017" # porta padrão do MongoDB
+    volumes:
+      - mongo_data:/data/db
+
+  python-service:
+    build: ./python-service
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+
+volumes:
+  mongo_data:
+
