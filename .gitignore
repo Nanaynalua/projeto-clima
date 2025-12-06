@@ -205,3 +205,24 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Node.js / React / NestJS
+node_modules/
+dist/
+build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Go
+bin/
+*.exe
+*.out
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
