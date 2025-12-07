@@ -1,0 +1,63 @@
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - .env.example
+    ports:
+      - "3001:3000"
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  pythonservice:
+    build: ./python
+    environment:
+      RABBITMQ_USER: guest
+      RABBITMQ_PASS: guest
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      QUEUE_NAME: weather_queue
+      CITY: Brasilia
+    depends_on:
+      - rabbitmq
+
+
+  goworker:
+    build: ./go-worker
+    env_file:
+      - .env.example
+    depends_on:
+      - rabbitmq
+      - pythonservice
+
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+
+
+
+volumes:
+  mongo_data:
+  rabbitmq_data:
